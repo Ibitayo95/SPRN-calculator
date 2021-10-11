@@ -7,57 +7,23 @@ public class SRPN {
 
   public void processCommand(String s) {
     try {
-      // if + sign added then pop the top two from stack and add them together
       if (s.equals("+")) {
-        int operandA = stack.pop();
-        int operandB = stack.pop();
-        double saturatedValue = (double) operandB + (double) operandA;
-        stack.push((int)saturatedValue);
-      }
-      // if - sign added then pop the top two from stack and take away
-      else if (s.equals("-")) {
-        int operandA = stack.pop();
-        int operandB = stack.pop();
-        double saturatedValue = (double) operandB - (double) operandA;
-        stack.push((int)saturatedValue);
-      }
-      // if * sign added then pop the top two from stack and multiply
-      else if (s.equals("*")) {
-        int operandA = stack.pop();
-        int operandB = stack.pop();
-        double saturatedValue = (double) operandB * (double) operandA;
-        stack.push((int)saturatedValue);
-      }
-      // if % sign added then pop the top two from stack and apply modulo
-      else if (s.equals("%")) {
-        int operandA = stack.pop();
-        int operandB = stack.pop();
-        double saturatedValue = (double) operandB % (double) operandA;
-        stack.push((int)saturatedValue);
-      }
-      // if / sign added then pop the top two from stack and apply division
-      else if (s.equals("/")) {
-        int operandA = stack.pop();
-        int operandB = stack.pop();
-        double saturatedValue = (double) operandB / (double) operandA;
-        stack.push((int)saturatedValue);
-      }
-      // if entered character is d then print out everything in the stack on a new
-      // line
-      else if (s.equals("d")) {
+        processPlus();
+      } else if (s.equals("-")) {
+        processMinus();
+      } else if (s.equals("*")) {
+        processMultiply();
+      } else if (s.equals("%")) {
+        processModulo();
+      } else if (s.equals("/")) {
+        processDivide();
+      } else if (s.equals("d")) {
         proccessD();
+      } else if (s.equals("=")) {
+        processEquals();
       }
-      // peek top of stack if equals sign
-      else if (s.equals("=")) {
-        try {
-          System.out.println(stack.peek());
-        } catch (EmptyStackException e) {
-          System.out.println("Stack empty.");
-        }
-      }
-
       // otherwise any number we enter gets pushed into the stack
-      // note that taking in as a double then casting to int solves
+      // note that taking in the number as a double, then casting to int keeps the numbers saturated
       else {
         double y = Double.parseDouble(s);
         int x = (int) y;
@@ -75,6 +41,76 @@ public class SRPN {
 
   }
 
+  // CALCULATION METHODS
+  // if + sign added then pop the top two from stack and add them together
+  public void processPlus() {
+    if (stack.size() >= 2) {
+      int operandA = stack.pop();
+      int operandB = stack.pop();
+      double saturatedValue = (double) operandB + (double) operandA;
+      stack.push((int) saturatedValue);
+    } else {
+      throw new EmptyStackException();
+    }
+  }
+
+  // if - sign added then pop the top two from stack and subtract
+  public void processMinus() {
+    if (stack.size() >= 2) {
+      int operandA = stack.pop();
+      int operandB = stack.pop();
+      double saturatedValue = (double) operandB - (double) operandA;
+      stack.push((int) saturatedValue);
+    } else {
+      throw new EmptyStackException();
+    }
+  }
+
+  // if * sign added then pop the top two from stack and multiply
+  public void processMultiply() {
+    if (stack.size() >= 2) {
+      int operandA = stack.pop();
+      int operandB = stack.pop();
+      double saturatedValue = (double) operandB * (double) operandA;
+      stack.push((int) saturatedValue);
+    } else {
+      throw new EmptyStackException();
+    }
+  }
+
+  // if % sign added then pop the top two from stack and apply modulo
+  public void processModulo() {
+    if (stack.size() >= 2) {
+      int operandA = stack.pop();
+      int operandB = stack.pop();
+      double saturatedValue = (double) operandB % (double) operandA;
+      stack.push((int) saturatedValue);
+    } else {
+      throw new EmptyStackException();
+    }
+  }
+
+  // if / sign added then pop the top two from stack and apply division
+  public void processDivide() {
+    if (stack.size() >= 2) {
+      int operandA = stack.pop();
+      int operandB = stack.pop();
+      double saturatedValue = (double) operandB / (double) operandA;
+      stack.push((int) saturatedValue);
+    } else {
+      throw new EmptyStackException();
+    }
+  }
+
+  // equals shows what is currently sitting on the top of the stack using peek()
+  public void processEquals() {
+    try {
+      System.out.println(stack.peek());
+    } catch (EmptyStackException e) {
+      System.out.println("Stack empty.");
+    }
+  }
+
   // d prints out everything in the stack on a new line
   public void proccessD() {
     if (stack.isEmpty()) {
@@ -86,5 +122,4 @@ public class SRPN {
     }
   }
 
-   
 }
