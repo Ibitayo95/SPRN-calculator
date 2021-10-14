@@ -6,8 +6,9 @@ public class SRPN {
   Stack<Integer> stack = new Stack<>();
 
   public void processCommand(String s) {
-    //Split the string into an array and loop through it (isolating operators so they stay in the array)
-    for (String digit : s.split("((?=[+|-|*|%|/|^|d|=| ])|(?<=[+|-|*|%|/|^|d|=| ]))")) {
+    // Split the string into an array and loop through it (isolating operators so
+    // they stay in the array)
+    for (String digit : s.split("((?=[+|-|*|%|/|^|d|r|=| ])|(?<=[+|-|*|%|/|^|d|r|=| ]))")) {
       try {
         if (digit.equals("+")) {
           processPlus();
@@ -25,6 +26,8 @@ public class SRPN {
           processPower();
         } else if (digit.equals("d")) {
           proccessD();
+        } else if (digit.equals("r")) {
+          processR();
         } else if (digit.equals("=")) {
           processEquals();
         }
@@ -40,6 +43,8 @@ public class SRPN {
 
       catch (EmptyStackException x) {
         System.out.println("Stack underflow.");
+      } catch (StackOverflowError w) {
+        System.out.println("Stack overflow.");
       } catch (ArithmeticException y) {
         System.out.println("Divide by 0.");
       } catch (NumberFormatException z) {
@@ -139,6 +144,12 @@ public class SRPN {
         System.out.println(element);
       }
     }
+  }
+  // r prints out next pseudorandom number and adds it to stack?
+  public void processR(){
+    Random number = new Random(1);
+    double randNum = number.nextInt(Integer.MAX_VALUE);
+    stack.push((int) randNum);
   }
 
 }
