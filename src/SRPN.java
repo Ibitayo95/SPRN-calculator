@@ -1,15 +1,42 @@
 import java.util.*;
+import java.math.*;
 
 public class SRPN {
 
   // creating new stack
   Stack<Integer> stack = new Stack<>();
-  
-  
+
+  // method to check if number is octal
+  public boolean isItOctal(String s) {
+    if (s.length() > 1 && !s.contains("8") && !s.contains("9")) {
+      if (s.charAt(0) == '0') {
+        return true;
+      } else if (s.charAt(0) == '-' && s.charAt(1) == '0') {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  // method to check if number input is not an octal but still has a 0 in front of it
+  public boolean failedOctalNumber(String s) {
+    if (!isItOctal(s) && (s.charAt(0) == '0')) {
+      return true;
+    }
+    return false;
+  }
+
+  // method to convert octal number into decimal
+  public String octalConverter(String s) {
+    BigInteger decimal = new BigInteger(s, 8);
+    return String.valueOf(decimal);
+  }
 
   public void processCommand(String s) {
     // remove any comments first
-    
 
     /*
      * Split the string into an array and loop through it (isolating operators so
@@ -18,7 +45,7 @@ public class SRPN {
     for (String digit : s.split("((?=[+|-|*|%|/|^|d|r|=| ])|(?<=[+|-|*|%|/|^|d|r|=| ]))")) {
       try {
         if (stack.size() < 23) {
-
+          
           if (digit.equals("+")) {
             processPlus();
           } else if (digit.equals(" ")) // if there is a space then do nothing
@@ -48,9 +75,25 @@ public class SRPN {
            */
           else {
 
-            double y = Double.parseDouble(digit);
-            int x = (int) y;
-            stack.push(x);
+            /*
+             * here lets also check if input number is an octal number (using another
+             * method) // if x is octal then convert it to decimal using another method and
+             * push new // value to stack // if not then push input number to stack like
+             * below
+             */
+            if (failedOctalNumber(digit)) {
+              continue;
+            }
+            if (isItOctal(digit)) {
+              String octalConverted = octalConverter(digit);
+              double num = Double.parseDouble(octalConverted);
+              int saturatedValue = (int) num;
+              stack.push(saturatedValue);
+            } else {
+              double num2 = Double.parseDouble(digit);
+              int saturatedNum = (int) num2;
+              stack.push(saturatedNum);
+            }
 
           }
 
@@ -73,6 +116,7 @@ public class SRPN {
   }
 
   // CALCULATION METHODS
+
   // if + sign added then pop the top two from stack and add them together, push
   // result to the stack
   public void processPlus() {
