@@ -5,6 +5,23 @@ public class SRPN {
 
   // creating new stack
   Stack<Integer> stack = new Stack<>();
+  int operandA;
+  int operandB;
+
+  // method to remove top two elements from stack. Otherwise throw error
+  public void getElements() {
+    if (stack.size() >= 2) {
+      operandA = stack.pop();
+      operandB = stack.pop();
+    } else
+      throw new EmptyStackException();
+  }
+
+  // method to return elements to stack if a calculation cannot occur
+  public void returnElements() {
+    stack.push(operandB);
+    stack.push(operandA);
+  }
 
   // method to check if number is octal
   public boolean isItOctal(String s) {
@@ -61,7 +78,8 @@ public class SRPN {
           processPower();
         } else if (digit.equals("d")) {
           proccessD();
-          // the max stack size is 23 so adding a random numbers when stack is full throws stackoverflow error.
+          // the max stack size is 23 so adding a random numbers when stack is full throws
+          // stackoverflow error.
         } else if (digit.equals("r")) {
           if (stack.size() < 23) {
             RandomNo num = new RandomNo();
@@ -128,14 +146,9 @@ public class SRPN {
    * result to the stack
    */
   public void processPlus() {
-    if (stack.size() >= 2) {
-      int operandA = stack.pop();
-      int operandB = stack.pop();
-      double saturatedValue = (double) operandB + (double) operandA;
-      stack.push((int) saturatedValue);
-    } else {
-      throw new EmptyStackException();
-    }
+    getElements();
+    double saturatedValue = (double) operandB + (double) operandA;
+    stack.push((int) saturatedValue);
   }
 
   /*
@@ -143,40 +156,25 @@ public class SRPN {
    * the stack
    */
   public void processMinus() {
-    if (stack.size() >= 2) {
-      int operandA = stack.pop();
-      int operandB = stack.pop();
-      double saturatedValue = (double) operandB - (double) operandA;
-      stack.push((int) saturatedValue);
-    } else {
-      throw new EmptyStackException();
-    }
+    getElements();
+    double saturatedValue = (double) operandB - (double) operandA;
+    stack.push((int) saturatedValue);
   }
 
   // if * sign added then pop the top two from stack and multiply, push result to
   // the stack
   public void processMultiply() {
-    if (stack.size() >= 2) {
-      int operandA = stack.pop();
-      int operandB = stack.pop();
-      double saturatedValue = (double) operandB * (double) operandA;
-      stack.push((int) saturatedValue);
-    } else {
-      throw new EmptyStackException();
-    }
+    getElements();
+    double saturatedValue = (double) operandB * (double) operandA;
+    stack.push((int) saturatedValue);
   }
 
   // if % sign added then pop the top two from stack and apply modulo, push result
   // to the stack
   public void processModulo() {
-    if (stack.size() >= 2) {
-      int operandA = stack.pop();
-      int operandB = stack.pop();
-      double saturatedValue = (double) operandB % (double) operandA;
-      stack.push((int) saturatedValue);
-    } else {
-      throw new EmptyStackException();
-    }
+    getElements();
+    double saturatedValue = (double) operandB % (double) operandA;
+    stack.push((int) saturatedValue);
   }
 
   /*
@@ -185,20 +183,13 @@ public class SRPN {
    * numbers back onto the stack.
    */
   public void processDivide() {
-    if (stack.size() >= 2) {
-      int operandA = stack.pop();
-      int operandB = stack.pop();
-      if (operandA == 0) {
-        stack.push(operandB);
-        stack.push(operandA);
-        throw new ArithmeticException();
-      } else {
-        double saturatedValue = (double) operandB / (double) operandA;
-        stack.push((int) saturatedValue);
-      }
-
+    getElements();
+    if (operandA == 0) {
+      returnElements();
+      throw new ArithmeticException();
     } else {
-      throw new EmptyStackException();
+      double saturatedValue = (double) operandB / (double) operandA;
+      stack.push((int) saturatedValue);
     }
   }
 
@@ -208,25 +199,14 @@ public class SRPN {
    * negative then print error message and push them back to the stack
    */
   public void processPower() {
-    if (stack.size() >= 2) {
-      int operandA = stack.pop();
-      int operandB = stack.pop();
-
-      if (operandA >= 0) {
-
-        double saturatedValue = Math.pow((double) operandB, (double) operandA);
-        stack.push((int) saturatedValue);
-      }
-
-      else {
-        System.err.println("Negative power.");
-        stack.push(operandB);
-        stack.push(operandA);
-
-      }
-
+    getElements();
+    if (operandA >= 0) {
+      double saturatedValue = Math.pow((double) operandB, (double) operandA);
+      stack.push((int) saturatedValue);
     } else {
-      throw new EmptyStackException();
+      System.err.println("Negative power.");
+      returnElements();
+
     }
   }
 
@@ -234,7 +214,7 @@ public class SRPN {
   public void processEquals() {
     try {
       System.out.println(stack.peek());
-    } catch (EmptyStackException e) {
+    } catch (EmptyStackException empty) {
       System.out.println("Stack empty.");
     }
   }
