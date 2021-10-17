@@ -76,12 +76,14 @@ public class RandomNo {
     }
 
     public int getRandomNo() {
-        // method that gets the next random number
+        // method that gets the next random number. After the 22nd value, reset counter
+        // to 0 and return first number.
         int myNo = randomList.get(counter);
-        if (counter == randomList.size()) {
+        if (counter == 21) {
             counter = 0;
+        } else {
+            counter++;
         }
-        counter++;
         return myNo;
     }
 }
