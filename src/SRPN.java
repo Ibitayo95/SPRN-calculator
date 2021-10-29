@@ -127,7 +127,7 @@ public class SRPN {
       }
       // error messages
       catch (EmptyStackException empt) {
-        System.err.println("Stack underflow.");
+        System.out.println("Stack underflow.");
       } catch (StackOverflowError over) {
         System.err.println("Stack overflow.");
       } catch (ArithmeticException ari) {
